@@ -1,0 +1,23 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-locapp18-dev-d1c19-authRole",
+      "UnauthRoleArn": "arn:aws:iam::767398064258:role/amplify-locapp18-dev-d1c19-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::767398064258:role/amplify-locapp18-dev-d1c19-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-locapp18-dev-d1c19-deployment",
+      "UnauthRoleName": "amplify-locapp18-dev-d1c19-unauthRole",
+      "StackName": "amplify-locapp18-dev-d1c19",
+      "StackId": "arn:aws:cloudformation:us-east-1:767398064258:stack/amplify-locapp18-dev-d1c19/2b92d1b0-2bb2-11ef-a9dd-0e8538e4dbb1",
+      "AmplifyAppId": "d2tuidskd6i4ve"
+    },
+    "categories": {
+      "auth": {
+        "locapp18162f46e5": {}
+      },
+      "api": {
+        "locapp18": {}
+      }
+    }
+  }
+}
