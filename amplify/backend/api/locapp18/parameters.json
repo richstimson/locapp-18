@@ -1,5 +1,6 @@
 {
   "AppSyncApiName": "locapp18",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
-  "DynamoDBEnableServerSideEncryption": false
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthModeLastUpdated": "2024-06-22T21:27:14.411Z"
 }

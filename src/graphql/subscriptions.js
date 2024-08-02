@@ -1,6 +1,14 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const onPublishMsgFromEb = /* GraphQL */ `
+  subscription OnPublishMsgFromEb {
+    onPublishMsgFromEb {
+      msg
+      __typename
+    }
+  }
+`;
 export const onCreateDevice = /* GraphQL */ `
   subscription OnCreateDevice($filter: ModelSubscriptionDeviceFilterInput) {
     onCreateDevice(filter: $filter) {

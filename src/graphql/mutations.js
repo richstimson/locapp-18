@@ -1,6 +1,14 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const publishMsgFromEB = /* GraphQL */ `
+  mutation PublishMsgFromEB($msg: String!) {
+    publishMsgFromEB(msg: $msg) {
+      msg
+      __typename
+    }
+  }
+`;
 export const createDevice = /* GraphQL */ `
   mutation CreateDevice(
     $input: CreateDeviceInput!

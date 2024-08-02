@@ -7,3 +7,25 @@ type Device @model {
   name: String!
   trackerName: String!
 }
+
+#type Message @aws_iam @aws_api_key {
+
+type Message {
+	msg: String!
+	@aws_iam
+	@aws_api_key
+}
+ 
+type Mutation {
+	publishMsgFromEB(msg: String!): Message!
+		@aws_iam
+		@aws_api_key
+}
+
+
+type Subscription {
+	onPublishMsgFromEb: Message
+		@aws_subscribe(mutations: ["publishMsgFromEB"])
+		@aws_iam
+		@aws_api_key
+}

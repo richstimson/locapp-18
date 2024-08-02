@@ -160,7 +160,7 @@ export default class Device{
         // console.log( 'update sub resp');
         // console.log( updateSubResp );
         // // ---
-/*
+
         // --- Subscribe to eventbridge message
         const ebSubResp = await appsyncClient
         .graphql({ query: subscriptions.onPublishMsgFromEb })
@@ -176,7 +176,7 @@ export default class Device{
         console.log( 'eb sub resp:');
         console.log( ebSubResp );
         // ---
-*/
+
         // Read ID from Expo file system
         let data = await this.read();
         console.log( 'read data:');

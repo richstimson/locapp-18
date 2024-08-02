@@ -149,6 +149,10 @@ const createGeofenceInput = { // PutGeofenceRequest
 
 const putGeoFenceCommand = new PutGeofenceCommand(createGeofenceInput);
 
+/*
+** createGeoFence()
+** Create GeoFence using createGeoFenceInput
+*/
 async function createGeoFence() {
   console.log( 'createGeoFence()' );
   console.log( createGeofenceInput );    

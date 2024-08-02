@@ -4,10 +4,16 @@
       "dependsOn": [],
       "output": {
         "authConfig": {
-          "additionalAuthenticationProviders": [],
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "AWS_IAM"
+            }
+          ],
           "defaultAuthentication": {
             "apiKeyConfig": {
-              "apiKeyExpirationDays": 7
+              "apiKeyExpirationDate": "2025-06-22T21:26:52.348Z",
+              "apiKeyExpirationDays": 365,
+              "description": "locapp18-key"
             },
             "authenticationType": "API_KEY"
           }
