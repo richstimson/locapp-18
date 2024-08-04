@@ -1,6 +1,15 @@
 // React & Expo Imports
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button, Alert, Image } from 'react-native';
+
+// ---
+//import { EventEmitter } from 'react-native';
+//import { NativeEventEmitter } from 'react-native';
+//import { appsyncClient } from  './src/device';
+//import * as subscriptions from './src/graphql/subscriptions';
+import { pollTracker } from './src/device.js';
+// ---
+
 import React, { useState, useEffect } from 'react';
 import MapView, { Marker, Circle } from 'react-native-maps';
 import { FAB, Title } from 'react-native-paper';
@@ -17,6 +26,7 @@ import {
   UpdateTrackerCommand
 } from '@aws-sdk/client-location';
 
+
 // Fix ReadableStream error
 import 'react-native-get-random-values';
 import 'react-native-url-polyfill/auto';
@@ -31,9 +41,14 @@ import Main from './main.js';
 
 // Globals
 let client;
-let updatesEnbaled = true;
-
+let updatesEnabled = true; // Enable updates to the aws location tracker
+// let pollTracker = true;    // Poll the aws location tracker for updates
 const trackerName = 'MobileTracker';
+
+// // Step 2: Create an instance of EventEmitter
+// //const emitter = new EventEmitter();
+// const emitter = new NativeEventEmitter();
+
 // -------
 Amplify.configure(amplifyconfig);
 
@@ -88,9 +103,9 @@ const updatePosCommand = new BatchUpdateDevicePositionCommand(updatePosParams);
 ** Update the tracker with new co-ordinates (of the mobike device)
 */
 async function updatePosition(lat, long) {
-   console.log( `updatesEnabled: ${updatesEnbaled}` );
+   console.log( `updatesEnabled: ${updatesEnabled}` );
 
-  if( updatesEnbaled ) {
+  if( updatesEnabled ) {
     console.log('updatePosition()');
 
     updatePosCommand.input.Updates[0].Position[0] = long;
@@ -141,7 +156,7 @@ const createGeofenceInput = { // PutGeofenceRequest
         -1.4301285333944764,
         52.94063620274229,
       ],
-      Radius: 20, // required
+      Radius: 5, // required
     },
   },
 };
@@ -178,14 +193,11 @@ async function createGeoFence() {
 }
 
 // Update Tracker API -------------------------------------
-
-
 const updateTrackerInput = { 
   TrackerName: 'MobileTracker',
   EventBridgeEnabled: true,
   Description: 'Bob Tracker',
 };
-
 
 /** NOTE: This command not be performed by unauth Role! */
 const updateTrackerCommand = new UpdateTrackerCommand(updateTrackerInput);
@@ -206,37 +218,67 @@ async function updateTracker() {
   else {
     console.log('no client ');
   }
-
 }
+// -------------------------------------------------
+
+// export const startPolling = () => {
+//   console.log('startPolling() - MARKER VISIBLE');
+//   pollTracker = true;
+// }
+
+// export const stopPolling = () => {
+//   console.log('stopPolling() - MARKER NOT VISIBLE');
+//   pollTracker = false;
+// }
 
 // --- App () ---
 
 export default function App() {
   console.log( 'App()');
 
-  function onPressFab() {
-    updatesEnbaled = !updatesEnbaled;
-    console.log( "Updates %s", updatesEnbaled ? "enabled" : "disabled" );
 
-    updatesEnbaled ? setFabIcon( 'minus' ) : setFabIcon( 'plus' );
+  
+  // --------------------------------------------
+
+  function onPressFab() {
+    updatesEnabled = !updatesEnabled;
+    console.log( "Updates %s", updatesEnabled ? "enabled" : "disabled" );
+
+    updatesEnabled ? setFabIcon( 'minus' ) : setFabIcon( 'plus' );
   }
 
   const [myLocation, setmyLocation] = useState({latitude: 0, longitude: 0});
-  const [fabIcon, setFabIcon] = (updatesEnbaled ? useState( 'minus' ) : useState( 'plus' ));
+  const [fabIcon, setFabIcon] = (updatesEnabled ? useState( 'minus' ) : useState( 'plus' ));
 
   const myMarker = {
     key: 1,
     title: "Ice Cream Van",
     description: "Michele's Ices"
   }
+
+  // State to control marker visibility
+  const [isMarkerVisible, setIsMarkerVisible] = useState(true);
+
+  // Function to toggle marker visibility
+  const setMarkerVisibility = ( visible ) => {
+    console.log( 'setMarkerVisibility(%s)', visible ? "true" : "false" );
+    setIsMarkerVisible(visible);
+  }
+
+  const toggleMarkerVisibility = () => {
+    setIsMarkerVisible(!isMarkerVisible);
+  };
+
   
   const showMarker = () => {
 
     console.log( 'showMarker()');
     console.log( {myMarker} );
     console.log( myLocation );
+    console.log( "isMarkerVisible: %s", isMarkerVisible ? "true" : "false" );
     
     return (
+      isMarkerVisible && (
       <Marker
         key={myMarker.key}
         coordinate={myLocation}
@@ -246,14 +288,25 @@ export default function App() {
       >
 
       </Marker>
+      )
     );
   }
- 
-  // Note: RECURSIVE FUNCTION - never returns
+
+  /* pollTrackerForUpdates
+  ** Poll the aws location tracker for updates - if polling is enabled (when vendor is in my geofence)
+  ** Note: RECURSIVE FUNCTION - never returns
+  */
   async function pollTrackerForUpdates() {
     console.log('pollTrackerForUpdates()');
 
-    await getPosition();
+    if( pollTracker ) {
+      setMarkerVisibility(true);
+      await getPosition();
+    }
+    else {
+      setMarkerVisibility(false);
+    }
+
     await new Promise(resolve => setTimeout(resolve, 10000));
     await pollTrackerForUpdates();
   }
@@ -288,8 +341,59 @@ export default function App() {
       client = await createClient();
       console.log( 'createGeoFence2' );  
       await createGeoFence();
-//      await updateTracker(); // not possible from unauth role!
+     //      await updateTracker(); // not possible from unauth role!
 
+// -------------------------------------------
+/*
+let subscription;
+
+const subscribeToUpdates = async () => {
+  subscription = await appsyncClient
+    .graphql({ query: subscriptions.onPublishMsgFromEb })
+    .subscribe({
+      next: ({ data }) => {
+        console.log("onPublishMsgFromEb (subscription) - msg received***********");
+        console.log(data);
+
+        if (data.onPublishMsgFromEb && data.onPublishMsgFromEb.msg) {
+          const message = data.onPublishMsgFromEb.msg;
+          if (message === "ENTER") {
+            console.log("ENTER received");
+            startPolling();
+          } else if (message === "EXIT") {
+            console.log("EXIT received");
+            stopPolling();
+          } else {
+            console.log("UNKNOWN received");
+          }
+        } else {
+          console.log("Message format unknown or missing 'msg' field");
+        }
+      },
+      error: (error) => {
+        console.error("Subscription error:", error);
+      },
+    });
+};
+
+subscribeToUpdates();
+*/
+
+// -------------------------------------------
+/*     
+      // Event emitter for marker visibility -------
+      const onChangeMarkerVisibility = (visible) => {
+        setIsMarkerVisible(visible);
+      };
+
+      emitter.addListener('changeMarkerVisibility', onChangeMarkerVisibility);
+
+      // Cleanup
+      return () => {
+        emitter.removeListener('changeMarkerVisibility', onChangeMarkerVisibility);
+      };
+      // -------------------------------------------
+*/
       await pollTrackerForUpdates(); // never returns
     })();
   }, []);
@@ -304,7 +408,7 @@ export default function App() {
                 longitude: -1.4301285333944764,
                 latitude: 52.94063620274229,
               }}
-              radius={20}
+              radius={5}
               strokeWidth={2}
               strokeColor="#3399ff"
               fillColor="rgba(50,50,255,0.1)"

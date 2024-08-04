@@ -7,11 +7,29 @@ import { generateClient } from 'aws-amplify/api';
 import config from '../src/amplifyconfiguration.json';
 import { listDevices } from './graphql/queries';
 import * as subscriptions from './graphql/subscriptions';
+//import { startPolling, stopPolling } from '../App';
 
 Amplify.configure(config)
 
 // Connect to Amplify/Appsync GraphQL API
 const appsyncClient = generateClient();
+
+// ----------------------------
+let pollTracker = true;
+
+async function startPolling() {
+    pollTracker = true;
+    // Polling logic here
+}
+
+async function stopPolling() {
+    pollTracker = false;
+    // Logic to stop polling
+}
+
+// Export startPolling and pollTracker for use in other modules
+export { pollTracker };
+// ----------------------------
 
 export default class Device{
     constructor(){
@@ -168,6 +186,22 @@ export default class Device{
         next: ({ data }) => {
             console.log( "onPublishMsgFromEb (subscription) - msg received***********");
             console.log(data);
+
+            if (data.onPublishMsgFromEb && data.onPublishMsgFromEb.msg) {
+                const message = data.onPublishMsgFromEb.msg;
+                if (message == "ENTER") {
+                    console.log("ENTER received");
+                    startPolling();
+                } else if (message == "EXIT") {
+                    console.log("EXIT received");
+                    stopPolling();
+                } else {
+                    console.log("UNKNOWN received");
+                }
+            } else {
+                console.log("Message format unknown or missing 'msg' field");
+            }
+
         },
         error: (error) => {
             console.log( "onPublishMsgFromEb (subscription) ERROR ***********");
