@@ -7,7 +7,7 @@ import { StyleSheet, Text, View, Button, Alert, Image } from 'react-native';
 //import { NativeEventEmitter } from 'react-native';
 //import { appsyncClient } from  './src/device';
 //import * as subscriptions from './src/graphql/subscriptions';
-import { pollTracker } from './src/device.js';
+import { pollTracker } from '../src/device.js';
 // ---
 
 import React, { useState, useEffect } from 'react';
@@ -34,8 +34,8 @@ import { ReadableStream } from 'web-streams-polyfill/ponyfill';
 
 
 // Local imports
-import amplifyconfig from './src/aws-exports.js';
-import Main from './main.js';
+import amplifyconfig from '../src/aws-exports.js';
+import Main from '../src/main.js';
 
 // -------------------------------------------------
 

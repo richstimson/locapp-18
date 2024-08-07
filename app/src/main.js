@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, Button, Alert  } from 'react-native';
 import * as Location from 'expo-location';
-import { updatePosition } from './App';
-import Device from './src/device';
+import { updatePosition } from '../(tabs)/App';
+import Device from './device';
 
 const deviceSvc = new Device();
 

@@ -4,7 +4,7 @@ import { createDevice, updateDevice, updateLocation } from './graphql/mutations'
 import { getDevice } from './graphql/queries'
 import { generateClient } from 'aws-amplify/api';
 
-import config from '../src/amplifyconfiguration.json';
+import config from './amplifyconfiguration.json';
 import { listDevices } from './graphql/queries';
 import * as subscriptions from './graphql/subscriptions';
 //import { startPolling, stopPolling } from '../App';
