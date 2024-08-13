@@ -33,9 +33,9 @@ export const listDevices = /* GraphQL */ `
     }
   }
 `;
-export const getUserTable = /* GraphQL */ `
-  query GetUserTable($id: ID!) {
-    getUserTable(id: $id) {
+export const getUser = /* GraphQL */ `
+  query GetUser($id: ID!) {
+    getUser(id: $id) {
       id
       userName
       email
@@ -54,13 +54,13 @@ export const getUserTable = /* GraphQL */ `
     }
   }
 `;
-export const listUserTables = /* GraphQL */ `
-  query ListUserTables(
-    $filter: ModelUserTableFilterInput
+export const listUsers = /* GraphQL */ `
+  query ListUsers(
+    $filter: ModelUserFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    listUserTables(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
         userName
@@ -75,11 +75,18 @@ export const listUserTables = /* GraphQL */ `
     }
   }
 `;
-export const getVendorTable = /* GraphQL */ `
-  query GetVendorTable($id: ID!) {
-    getVendorTable(id: $id) {
+export const getVendor = /* GraphQL */ `
+  query GetVendor($id: ID!) {
+    getVendor(id: $id) {
       deviceId
       vendorName
+      vendorMarker {
+        key
+        title
+        description
+        __typename
+      }
+      trackerName
       id
       createdAt
       updatedAt
@@ -87,16 +94,17 @@ export const getVendorTable = /* GraphQL */ `
     }
   }
 `;
-export const listVendorTables = /* GraphQL */ `
-  query ListVendorTables(
-    $filter: ModelVendorTableFilterInput
+export const listVendors = /* GraphQL */ `
+  query ListVendors(
+    $filter: ModelVendorFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    listVendorTables(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    listVendors(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         deviceId
         vendorName
+        trackerName
         id
         createdAt
         updatedAt

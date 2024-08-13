@@ -25,7 +25,7 @@ type GeoFence {
 	@aws_api_key
 }
 
-type userTable @model {
+type User @model {
   	id: ID!
   	userName: String!
   	email: String
@@ -34,9 +34,18 @@ type userTable @model {
 	@aws_api_key
 }
 
-type vendorTable @model {
+type VendorMarker {
+	key: Int
+	title: String
+	description: String
+	@aws_api_key
+}
+
+type Vendor @model {
 	deviceId: ID!
 	vendorName: String!
+	vendorMarker: VendorMarker
+	trackerName: String!
 }
 
 

@@ -54,12 +54,12 @@ export const deleteDevice = /* GraphQL */ `
     }
   }
 `;
-export const createUserTable = /* GraphQL */ `
-  mutation CreateUserTable(
-    $input: CreateUserTableInput!
-    $condition: ModelUserTableConditionInput
+export const createUser = /* GraphQL */ `
+  mutation CreateUser(
+    $input: CreateUserInput!
+    $condition: ModelUserConditionInput
   ) {
-    createUserTable(input: $input, condition: $condition) {
+    createUser(input: $input, condition: $condition) {
       id
       userName
       email
@@ -78,12 +78,12 @@ export const createUserTable = /* GraphQL */ `
     }
   }
 `;
-export const updateUserTable = /* GraphQL */ `
-  mutation UpdateUserTable(
-    $input: UpdateUserTableInput!
-    $condition: ModelUserTableConditionInput
+export const updateUser = /* GraphQL */ `
+  mutation UpdateUser(
+    $input: UpdateUserInput!
+    $condition: ModelUserConditionInput
   ) {
-    updateUserTable(input: $input, condition: $condition) {
+    updateUser(input: $input, condition: $condition) {
       id
       userName
       email
@@ -102,12 +102,12 @@ export const updateUserTable = /* GraphQL */ `
     }
   }
 `;
-export const deleteUserTable = /* GraphQL */ `
-  mutation DeleteUserTable(
-    $input: DeleteUserTableInput!
-    $condition: ModelUserTableConditionInput
+export const deleteUser = /* GraphQL */ `
+  mutation DeleteUser(
+    $input: DeleteUserInput!
+    $condition: ModelUserConditionInput
   ) {
-    deleteUserTable(input: $input, condition: $condition) {
+    deleteUser(input: $input, condition: $condition) {
       id
       userName
       email
@@ -126,14 +126,21 @@ export const deleteUserTable = /* GraphQL */ `
     }
   }
 `;
-export const createVendorTable = /* GraphQL */ `
-  mutation CreateVendorTable(
-    $input: CreateVendorTableInput!
-    $condition: ModelVendorTableConditionInput
+export const createVendor = /* GraphQL */ `
+  mutation CreateVendor(
+    $input: CreateVendorInput!
+    $condition: ModelVendorConditionInput
   ) {
-    createVendorTable(input: $input, condition: $condition) {
+    createVendor(input: $input, condition: $condition) {
       deviceId
       vendorName
+      vendorMarker {
+        key
+        title
+        description
+        __typename
+      }
+      trackerName
       id
       createdAt
       updatedAt
@@ -141,14 +148,21 @@ export const createVendorTable = /* GraphQL */ `
     }
   }
 `;
-export const updateVendorTable = /* GraphQL */ `
-  mutation UpdateVendorTable(
-    $input: UpdateVendorTableInput!
-    $condition: ModelVendorTableConditionInput
+export const updateVendor = /* GraphQL */ `
+  mutation UpdateVendor(
+    $input: UpdateVendorInput!
+    $condition: ModelVendorConditionInput
   ) {
-    updateVendorTable(input: $input, condition: $condition) {
+    updateVendor(input: $input, condition: $condition) {
       deviceId
       vendorName
+      vendorMarker {
+        key
+        title
+        description
+        __typename
+      }
+      trackerName
       id
       createdAt
       updatedAt
@@ -156,14 +170,21 @@ export const updateVendorTable = /* GraphQL */ `
     }
   }
 `;
-export const deleteVendorTable = /* GraphQL */ `
-  mutation DeleteVendorTable(
-    $input: DeleteVendorTableInput!
-    $condition: ModelVendorTableConditionInput
+export const deleteVendor = /* GraphQL */ `
+  mutation DeleteVendor(
+    $input: DeleteVendorInput!
+    $condition: ModelVendorConditionInput
   ) {
-    deleteVendorTable(input: $input, condition: $condition) {
+    deleteVendor(input: $input, condition: $condition) {
       deviceId
       vendorName
+      vendorMarker {
+        key
+        title
+        description
+        __typename
+      }
+      trackerName
       id
       createdAt
       updatedAt

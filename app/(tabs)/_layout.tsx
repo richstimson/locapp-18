@@ -4,11 +4,11 @@ import { View, Text } from 'react-native';
 const TabsLayout = () => {
     return (
         <Tabs>
-            <Tabs.Screen name="index" options={{
-                headerTitle: "Home Page",
+            <Tabs.Screen name="userConfigScreen" options={{
+                headerTitle: "User Config",
             }}/>
             <Tabs.Screen name="App" options={{
-                headerTitle: "App Page",
+                headerTitle: "Map",
             }}/>
         </Tabs>
     );

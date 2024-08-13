@@ -45,11 +45,9 @@ export const onDeleteDevice = /* GraphQL */ `
     }
   }
 `;
-export const onCreateUserTable = /* GraphQL */ `
-  subscription OnCreateUserTable(
-    $filter: ModelSubscriptionUserTableFilterInput
-  ) {
-    onCreateUserTable(filter: $filter) {
+export const onCreateUser = /* GraphQL */ `
+  subscription OnCreateUser($filter: ModelSubscriptionUserFilterInput) {
+    onCreateUser(filter: $filter) {
       id
       userName
       email
@@ -68,11 +66,9 @@ export const onCreateUserTable = /* GraphQL */ `
     }
   }
 `;
-export const onUpdateUserTable = /* GraphQL */ `
-  subscription OnUpdateUserTable(
-    $filter: ModelSubscriptionUserTableFilterInput
-  ) {
-    onUpdateUserTable(filter: $filter) {
+export const onUpdateUser = /* GraphQL */ `
+  subscription OnUpdateUser($filter: ModelSubscriptionUserFilterInput) {
+    onUpdateUser(filter: $filter) {
       id
       userName
       email
@@ -91,11 +87,9 @@ export const onUpdateUserTable = /* GraphQL */ `
     }
   }
 `;
-export const onDeleteUserTable = /* GraphQL */ `
-  subscription OnDeleteUserTable(
-    $filter: ModelSubscriptionUserTableFilterInput
-  ) {
-    onDeleteUserTable(filter: $filter) {
+export const onDeleteUser = /* GraphQL */ `
+  subscription OnDeleteUser($filter: ModelSubscriptionUserFilterInput) {
+    onDeleteUser(filter: $filter) {
       id
       userName
       email
@@ -114,13 +108,18 @@ export const onDeleteUserTable = /* GraphQL */ `
     }
   }
 `;
-export const onCreateVendorTable = /* GraphQL */ `
-  subscription OnCreateVendorTable(
-    $filter: ModelSubscriptionVendorTableFilterInput
-  ) {
-    onCreateVendorTable(filter: $filter) {
+export const onCreateVendor = /* GraphQL */ `
+  subscription OnCreateVendor($filter: ModelSubscriptionVendorFilterInput) {
+    onCreateVendor(filter: $filter) {
       deviceId
       vendorName
+      vendorMarker {
+        key
+        title
+        description
+        __typename
+      }
+      trackerName
       id
       createdAt
       updatedAt
@@ -128,13 +127,18 @@ export const onCreateVendorTable = /* GraphQL */ `
     }
   }
 `;
-export const onUpdateVendorTable = /* GraphQL */ `
-  subscription OnUpdateVendorTable(
-    $filter: ModelSubscriptionVendorTableFilterInput
-  ) {
-    onUpdateVendorTable(filter: $filter) {
+export const onUpdateVendor = /* GraphQL */ `
+  subscription OnUpdateVendor($filter: ModelSubscriptionVendorFilterInput) {
+    onUpdateVendor(filter: $filter) {
       deviceId
       vendorName
+      vendorMarker {
+        key
+        title
+        description
+        __typename
+      }
+      trackerName
       id
       createdAt
       updatedAt
@@ -142,13 +146,18 @@ export const onUpdateVendorTable = /* GraphQL */ `
     }
   }
 `;
-export const onDeleteVendorTable = /* GraphQL */ `
-  subscription OnDeleteVendorTable(
-    $filter: ModelSubscriptionVendorTableFilterInput
-  ) {
-    onDeleteVendorTable(filter: $filter) {
+export const onDeleteVendor = /* GraphQL */ `
+  subscription OnDeleteVendor($filter: ModelSubscriptionVendorFilterInput) {
+    onDeleteVendor(filter: $filter) {
       deviceId
       vendorName
+      vendorMarker {
+        key
+        title
+        description
+        __typename
+      }
+      trackerName
       id
       createdAt
       updatedAt
