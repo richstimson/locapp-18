@@ -15,7 +15,56 @@ type Message {
 	@aws_iam
 	@aws_api_key
 }
- 
+
+type GeoFence {
+	id: ID!
+	name: String!
+	lat: Float!
+	long: Float!
+	radius: Int!
+	@aws_api_key
+}
+
+type userTable @model {
+  	id: ID!
+  	userName: String!
+  	email: String
+	geofence: GeoFence
+	myVendors: [String]
+	@aws_api_key
+}
+
+type vendorTable @model {
+	deviceId: ID!
+	vendorName: String!
+}
+
+
+# type vendorTable @model {
+# 	id: ID!
+# 	vendorName: String!
+# 	vendorEmail: String
+# 	vendorPhone: String
+# 	vendorAddress: String
+# 	vendorCity: String
+# 	vendorState: String
+# 	vendorZip: String
+# 	vendorCountry: String
+# 	vendorWebsite: String
+# 	vendorLogo: String
+# 	vendorDescription: String
+# 	vendorCategory: String
+# 	vendorSubCategory: String
+# 	vendorRating: Float
+# 	vendorReviews: [String]
+# 	vendorGeoFence: GeoFence
+# 	@aws_api_key
+# }
+
+
+
+
+
 type Mutation {
 	publishMsgFromEB(msg: String!): Message!
 		@aws_iam
