@@ -36,11 +36,12 @@ import { ReadableStream } from 'web-streams-polyfill/ponyfill';
 // Local imports
 import amplifyconfig from '../src/aws-exports.js';
 import Main from '../src/main.js';
+import { userSvc } from '../src/user';
 
 // -------------------------------------------------
 
 // Globals
-let client;
+let locationClient; // LocationClient
 let updatesEnabled = true; // Enable updates to the aws location tracker
 // let pollTracker = true;    // Poll the aws location tracker for updates
 const trackerName = 'MobileTracker';
@@ -115,9 +116,9 @@ async function updatePosition(lat, long) {
    console.log( `DeviceId: ${updatePosCommand.input.Updates[0].DeviceId}` );
     
 
-    if(client) {  
+    if(locationClient) {  
       try {
-        const data = await client.send(updatePosCommand);
+        const data = await locationClient.send(updatePosCommand);
         console.log( `Tx Pos: ${updatePosCommand.input.Updates[0].Position}` );
         console.log( 'data' );
         console.log (data);
@@ -172,9 +173,9 @@ async function createGeoFence() {
   console.log( 'createGeoFence()' );
   console.log( createGeofenceInput );    
 
-  if(client) {  
+  if(locationClient) {  
     try {
-      const putGeoFenceResponse = await client.send(putGeoFenceCommand);
+      const putGeoFenceResponse = await locationClient.send(putGeoFenceCommand);
       console.log( putGeoFenceResponse );
       // { // PutGeofenceResponse
       //   GeofenceId: "STRING_VALUE", // required
@@ -205,9 +206,9 @@ const updateTrackerCommand = new UpdateTrackerCommand(updateTrackerInput);
 async function updateTracker() {
   console.log( 'updateTracker()' );    
 
-  if(client) {  
+  if(locationClient) {  
     try {
-      const updateTrackerResponse = await client.send(updateTrackerCommand);
+      const updateTrackerResponse = await locationClient.send(updateTrackerCommand);
       console.log( updateTrackerResponse );
 
       } catch (error) {
@@ -245,6 +246,13 @@ export default function App() {
     console.log( "Updates %s", updatesEnabled ? "enabled" : "disabled" );
 
     updatesEnabled ? setFabIcon( 'minus' ) : setFabIcon( 'plus' );
+  }
+
+  async function onPressFabUserOne() {
+    console.log( 'onPressFabUserOne()');
+
+    await userSvc.getUserDetailsByName('Fred');
+
   }
 
   const [myLocation, setmyLocation] = useState({latitude: 0, longitude: 0});
@@ -318,8 +326,8 @@ export default function App() {
   async function getPosition() {
     console.log('getPosition()');
 
-    if(client) {
-      client.send(getPosCommand, (err, data) => {
+    if(locationClient) {
+      locationClient.send(getPosCommand, (err, data) => {
         if (err) 
         {
             console.log( 'error:' );
@@ -338,7 +346,7 @@ export default function App() {
   useEffect(() => {
     console.log( 'App useEffect()');
     (async () => {
-      client = await createClient();
+      locationClient = await createClient();
       console.log( 'createGeoFence2' );  
       await createGeoFence();
      //      await updateTracker(); // not possible from unauth role!
@@ -420,6 +428,11 @@ subscribeToUpdates();
             style={styles.fab}
             onPress={onPressFab}
           />
+          <FAB
+            icon={'numeric-1'}
+            style={styles.fabUserOne}
+            onPress={onPressFabUserOne}
+          />
 
       </View>
 
@@ -446,5 +459,11 @@ const styles = StyleSheet.create({
     margin: 16,
     right: 0,
     top: 30,
+  },
+  fabUserOne: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    top: 100,
   },
 });

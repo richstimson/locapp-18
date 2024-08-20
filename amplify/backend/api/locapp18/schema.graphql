@@ -17,7 +17,6 @@ type Message {
 }
 
 type GeoFence {
-	id: ID!
 	name: String!
 	lat: Float!
 	long: Float!
@@ -28,9 +27,9 @@ type GeoFence {
 type User @model {
   	id: ID!
   	userName: String!
+	postcode: String
   	email: String
 	geofence: GeoFence
-	myVendors: [String]
 	@aws_api_key
 }
 

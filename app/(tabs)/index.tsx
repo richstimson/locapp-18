@@ -1,1 +1,8 @@
-// Dummy page to allow tabs to work
+import React from 'react';
+import { Redirect } from 'expo-router';
+
+const Index = () => {
+    return <Redirect href="/userConfigScreen" />;
+};
+
+export default Index;

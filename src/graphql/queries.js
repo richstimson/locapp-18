@@ -38,16 +38,15 @@ export const getUser = /* GraphQL */ `
     getUser(id: $id) {
       id
       userName
+      postcode
       email
       geofence {
-        id
         name
         lat
         long
         radius
         __typename
       }
-      myVendors
       createdAt
       updatedAt
       __typename
@@ -64,8 +63,8 @@ export const listUsers = /* GraphQL */ `
       items {
         id
         userName
+        postcode
         email
-        myVendors
         createdAt
         updatedAt
         __typename

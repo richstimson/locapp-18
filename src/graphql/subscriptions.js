@@ -50,16 +50,15 @@ export const onCreateUser = /* GraphQL */ `
     onCreateUser(filter: $filter) {
       id
       userName
+      postcode
       email
       geofence {
-        id
         name
         lat
         long
         radius
         __typename
       }
-      myVendors
       createdAt
       updatedAt
       __typename
@@ -71,16 +70,15 @@ export const onUpdateUser = /* GraphQL */ `
     onUpdateUser(filter: $filter) {
       id
       userName
+      postcode
       email
       geofence {
-        id
         name
         lat
         long
         radius
         __typename
       }
-      myVendors
       createdAt
       updatedAt
       __typename
@@ -92,16 +90,15 @@ export const onDeleteUser = /* GraphQL */ `
     onDeleteUser(filter: $filter) {
       id
       userName
+      postcode
       email
       geofence {
-        id
         name
         lat
         long
         radius
         __typename
       }
-      myVendors
       createdAt
       updatedAt
       __typename

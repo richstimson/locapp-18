@@ -1,18 +1,21 @@
 import * as FileSystem from 'expo-file-system';
 import { Amplify } from 'aws-amplify'
-import { createDevice, updateDevice, updateLocation } from './graphql/mutations';
-import { getDevice } from './graphql/queries'
-import { generateClient } from 'aws-amplify/api';
+
+import { createDevice, updateDevice, updateLocation } from '../../src/graphql/mutations';
+import { getDevice } from '../../src/graphql/queries'
+import { listDevices } from '../../src/graphql/queries';
+import * as subscriptions from '../../src/graphql/subscriptions';
+
+// import { generateClient } from 'aws-amplify/api';
+import appsyncClient from './appsyncClient';
 
 import config from './amplifyconfiguration.json';
-import { listDevices } from './graphql/queries';
-import * as subscriptions from './graphql/subscriptions';
 //import { startPolling, stopPolling } from '../App';
 
 Amplify.configure(config)
 
 // Connect to Amplify/Appsync GraphQL API
-const appsyncClient = generateClient();
+// const appsyncClient = generateClient(); - now imported from appsyncClient.js
 
 // ----------------------------
 let pollTracker = true;
@@ -31,9 +34,9 @@ async function stopPolling() {
 export { pollTracker };
 // ----------------------------
 
-export default class Device{
+export default class Device {
     constructor(){
-        console.log( 'constructor()');
+        console.log( 'Device constructor()');
         this.fileName = `${FileSystem.documentDirectory}app.json`;
         this.id = "0";
         this.trackerName = "";
@@ -70,7 +73,7 @@ export default class Device{
     }
 
 
-
+    // Register device
     async register(name,trackerName){
         console.log(`register() id==${this.id} name: ${name} trackerName: ${trackerName}`)
         console.log(typeof this.id);
@@ -88,8 +91,6 @@ export default class Device{
 
     async create(name,trackerName){
         console.log( `create ${name} ${trackerName}`);
-
-
 
         const resp = await appsyncClient
         .graphql({
@@ -132,12 +133,6 @@ export default class Device{
                     }
                 }
             });
-            // .subscribe({
-            //     next: ({ data }) => {
-            //         console.log( "Device updated (subscription) ***********");
-            //         console.log( data );
-            //     }
-            // })
             console.log( 'update resp');
             console.log( resp );
     
@@ -257,6 +252,7 @@ export default class Device{
         console.log( 'init failed' );
     }
 
+    // I don't believe this is used anywhere *************
     async setLocation(lat, lon){
         console.log( `setLocation() lat: ${lat} long: ${lon}`);
         console.log( `trackerName: ${this.trackerName}, deviceId: ${this.id}`);
@@ -275,4 +271,6 @@ export default class Device{
         console.log('setLocation resp ');
         console.log( resp );
     }   
+
+ 
 }
