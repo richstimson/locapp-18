@@ -227,15 +227,18 @@ export default function App() {
   console.log( 'App()');
   const { userConfig, setUsername, setId, setPostcode, setGeofence } = useContext(UserConfigContext);
 
-  const onPressFabUserOne = async () => {
-      console.log('onPressFabUserOne()');
-      const userDetails = await userSvc.getUserDetailsByName('Fred');
+  const handleFabPress = async (username) => {
+    console.log(`handleFabPress(${username})`);
+    const userDetails = await userSvc.getUserDetailsByName(username);
 
-      setUsername(userDetails.username);
-      setPostcode(userDetails.postcode);
-      setGeofence(userDetails.geofence);
-
+    setUsername(userDetails.username);
+    setPostcode(userDetails.postcode);
+    setGeofence(userDetails.geofence);
   }
+
+  const onPressFabUserOne = () => handleFabPress('Bob');
+  const onPressFabUserTwo = () => handleFabPress('Fred');
+  const onPressFabUserThree = () => handleFabPress('Jeff');
 
   // Handle plus/minus fab button press
   function onPressFab() {
@@ -380,6 +383,16 @@ export default function App() {
             style={styles.fabUserOne}
             onPress={onPressFabUserOne}
           />
+          <FAB
+            icon={'numeric-2'}
+            style={styles.fabUserTwo}
+            onPress={onPressFabUserTwo}
+        />
+        <FAB
+            icon={'numeric-3'}
+            style={styles.fabUserThree}
+            onPress={onPressFabUserThree}
+        />
 
       </View>
   );
@@ -412,4 +425,16 @@ const styles = StyleSheet.create({
     right: 0,
     top: 100,
   },
+  fabUserTwo: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    top: 170,
+  },
+  fabUserThree: {
+      position: 'absolute',
+      margin: 16,
+      right: 0,
+      top: 240,
+},
 });

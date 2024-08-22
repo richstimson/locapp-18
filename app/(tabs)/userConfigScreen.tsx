@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { Button } from 'react-native-paper';
+//import { Button } from 'react-native';
 import * as Location from 'expo-location';
 
 import Device from '../src/device';
@@ -86,225 +87,136 @@ const ConfigScreen = () => {
     };
 
     return (
-        <View>
+        <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // *******
+        style={{ flex: 1 }} // *******
+    >
+        <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.container}>
             <Text style={styles.titleText}>User Config</Text>
-            <Text style={styles.bodyText}>UserName:</Text>
-            <TextInput
-                style={styles.bodyText}
-                placeholder="Enter a User name"
-                value={userConfig?.username || ''}
-                onChangeText={setUsername}
-            />
-            <Text style={styles.bodyText}>Postcode:</Text>
-            <TextInput
-                style={styles.bodyText}
-                placeholder="Enter a Postcode"
-                value={userConfig?.postcode || ''}
-                onChangeText={setPostcode}
-            />
-            <Text style={styles.bodyText}>Geofence Name:</Text>
-            <TextInput
-                style={styles.bodyText}
-                placeholder="Enter Geofence Name"
-                value={userConfig?.geofence.name || ''}
-                onChangeText={(text) => setGeofence({ name: text })}
-            />
-            <Text style={styles.bodyText}>Geofence Latitude:</Text>
-            <TextInput
-                style={styles.bodyText}
-                placeholder="Enter Geofence Latitude"
-                value={userConfig?.geofence.lat.toString() || ''}
-                onChangeText={(text) => setGeofence({ lat: parseFloat(text) })}
-            />
-            <Text style={styles.bodyText}>Geofence Longitude:</Text>
-            <TextInput
-                style={styles.bodyText}
-                placeholder="Enter Geofence Longitude"
-                value={userConfig?.geofence.long.toString() || ''}
-                onChangeText={(text) => setGeofence({ long: parseFloat(text) })}
-            />
-            <Text style={styles.bodyText}>Geofence Radius:</Text>
-            <TextInput
-                style={styles.bodyText}
-                placeholder="Enter Geofence Radius"
-                value={userConfig?.geofence.radius.toString() || ''}
-                onChangeText={(text) => setGeofence({ radius: parseFloat(text) })}
-            />
-            <Button
-                mode="contained"
+            <View style={styles.inputGroup}>
+                <Text style={styles.labelText}>UserName:</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Enter a User name"
+                    value={userConfig?.username || ''}
+                    onChangeText={setUsername}
+                />
+            </View>
+            <View style={styles.inputGroup}>
+                <Text style={styles.labelText}>Postcode:</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Enter a Postcode"
+                    value={userConfig?.postcode || ''}
+                    onChangeText={setPostcode}
+                />
+            </View>
+            <View style={styles.geofenceGroup}>
+                <Text style={styles.sectionTitle}>Geofence</Text>
+                <View style={styles.inputGroup}>
+                    <Text style={styles.labelText}>Name:</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Enter Geofence Name"
+                        value={userConfig?.geofence.name || ''}
+                        onChangeText={(text) => setGeofence({ name: text })}
+                    />
+                </View>
+                <View style={styles.inputGroup}>
+                    <Text style={styles.labelText}>Latitude:</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Enter Geofence Latitude"
+                        value={userConfig?.geofence.lat.toString() || ''}
+                        onChangeText={(text) => setGeofence({ lat: parseFloat(text) })}
+                    />
+                </View>
+                <View style={styles.inputGroup}>
+                    <Text style={styles.labelText}>Longitude:</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Enter Geofence Longitude"
+                        value={userConfig?.geofence.long.toString() || ''}
+                        onChangeText={(text) => setGeofence({ long: parseFloat(text) })}
+                    />
+                </View>
+                <View style={styles.inputGroup}>
+                    <Text style={styles.labelText}>Radius:</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Enter Geofence Radius"
+                        value={userConfig?.geofence.radius.toString() || ''}
+                        onChangeText={(text) => setGeofence({ radius: parseFloat(text) })}
+                    />
+                </View>
+            </View>
+            <TouchableOpacity
+                style={styles.submitButton}
                 onPress={handleSubmitUserConfig}
-                style={{ alignSelf: 'center' }}
             >
-                <Text>Submit</Text>
-            </Button>
+                <Text style={styles.buttonText}>Submit</Text>
+            </TouchableOpacity>
         </View>
+         </ScrollView>
+         </KeyboardAvoidingView>
     );
-/*
-    return (
-        <View>
-            <Text style={styles.titleText}>User Config</Text>
-            <Text style={styles.bodyText}>UserName:</Text>
-            <TextInput
-                style={styles.bodyText}
-                placeholder="Enter a User name"
-                value={userName}
-                onChangeText={setUserName}
-            />
-
-            <Text style={styles.titleText}>Create Geofence</Text>
-
-            <Text style={styles.bodyText}>Address:</Text>
-            <TextInput
-                style={styles.bodyText}
-                placeholder="Enter your post code"
-                value={address}
-                onChangeText={setAddress}
-            />
-
-            <Text style={styles.bodyText}>Radius:</Text>
-            <TextInput
-                style={styles.bodyText}
-                placeholder="Enter radius"
-                value={radius.toString()}
-                onChangeText={text => setRadius(Number(text))}
-            />
-
-            <Button
-                mode="contained"
-                onPress={handleSubmitUserConfig}
-                style={{ alignSelf: 'center' }}
-            >
-                <Text>Submit</Text>
-            </Button>
-            <Text>Coords: {long}, {lat}</Text>
-            <Text>Radius: {radius}</Text>
-        </View>
-    );
-*/
 };
 
 const styles = StyleSheet.create({
-    titleText: {
-        fontSize: 30,
-        fontWeight: 'bold',
+    container: {
+        flexGrow: 1,
+        padding: 15,
+        backgroundColor: '#e0f7fa', // Light blue background
     },
-    bodyText: {
+    titleText: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#01579b', // Dark blue text
+        marginBottom: 15,
+        textAlign: 'center',
+    },
+    sectionTitle: {
         fontSize: 20,
+        fontWeight: 'bold',
+        color: '#0277bd', // Medium blue text
+        marginBottom: 8,
+    },
+    inputGroup: {
+        marginBottom: 10,
+    },
+    labelText: {
+        fontSize: 16,
+        color: '#0288d1', // Light blue text
+        marginBottom: 4,
+    },
+    input: {
+        fontSize: 14,
+        padding: 8,
+        borderWidth: 1,
+        borderColor: '#81d4fa', // Light blue border
+        borderRadius: 5,
+        backgroundColor: '#ffffff', // White background for inputs
+    },
+    geofenceGroup: {
+        marginTop: 15,
+        padding: 10,
+        borderWidth: 1,
+        borderColor: '#4fc3f7', // Light blue border
+        borderRadius: 10,
+        backgroundColor: '#b3e5fc', // Very light blue background
+    },
+    submitButton: {
+        marginTop: 15,
+        padding: 8,
+        backgroundColor: '#0288d1', // Light blue button
+        borderRadius: 5,
+        alignSelf: 'center',
+    },
+    buttonText: {
+        fontSize: 16,
+        color: '#ffffff', // White text for button
     },
 });
 
-/*
-ConfigScreen.propTypes = {
-    setUpdateUCStateCallback: PropTypes.func.isRequired,
-};
-*/
 export default ConfigScreen;
-
-
-
-
-/*
-import React, { useState } from 'react';
-import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
-import * as Location from 'expo-location';
-import { Button } from 'react-native-paper';
-//import { FloatingLabelInput } from 'react-native-floating-label-input';
-
-import Device from '../src/device';
-const deviceSvc = new Device();
-
-// Import the User module or class
-// import User from '../src/User';
-import { userSvc } from '../src/user';
-
-const ConfigScreen: React.FC = () => {
-    const [address, setAddress] = useState('');
-    const [{long, lat}, setCoords] = useState({'long': 0, 'lat': 0});
-    const [geofence, setGeofence] = useState({	name: '', lat: 0, long: 0, radius: 0 });
-    const [radius, setRadius] = useState(0);
-    const [userName, setUserName] = useState('');
-
-    const geocodeAddress = async (address: string) => {
-        const results = await Location.geocodeAsync(address);
-        console.log(`Latitude: ${results[0].latitude}`);
-        console.log(`Longitude: ${results[0].longitude}`);
-        console.log('accuracy:', results[0].accuracy);
-        console.log('Geocoded Location:', results);
-
-        setCoords({'long': results[0].longitude, 'lat': results[0].latitude});
-        setGeofence({name: userName, lat: results[0].latitude, long: results[0].longitude, radius: radius});
-      }
-      
-    // const geocodeEnteredAddress = () => {
-    //     geocodeAddress(address);
-    // }
-
-    const handleSubmitUserConfig = () => {
-        console.log('Submit User Config:', userName);
-        geocodeAddress(address);
-        userSvc.createUser(userName, { ...geofence, name: userName });
-    }    
-    
-    return (
-        <View>
-
-            <Text style={styles.titleText}>User Config</Text>
-            <Text style={styles.bodyText}>UserName:</Text>
-            <TextInput style={styles.bodyText}
-                placeholder="Enter an User name"
-                value={userName}
-                onChangeText={setUserName} />
-
-            <Text style={styles.titleText}>Create Geofence</Text>
-
-            <Text style={styles.bodyText}>Address:</Text>
-            <TextInput style={styles.bodyText}
-                placeholder="Enter an address"
-                value={address}
-                onChangeText={setAddress} />
-
-
-            <Text style={styles.bodyText}>Radius:</Text>
-            <TextInput style={styles.bodyText}
-                placeholder="Enter radius"
-                value={radius.toString()}
-                onChangeText={text => setRadius(Number(text))} />
-
-            <Button 
-                mode="contained" 
-                onPress={handleSubmitUserConfig}
-                style={{alignSelf: 'center' }}
-                >
-                <Text>Submit</Text>
-            </Button>
-            <Text>Coords: {long}, {lat}</Text>
-            <Text>Radius: {radius}</Text>
-        </View>
-    );
-    
-    
-    // return (
-    //     <View style={{ padding: 50, flex: 1, backgroundColor: '#fff' }}>
-    //         <FloatingLabelInput
-    //             label={'radius'}
-    //             value={radius}
-    //             onChangeText={value => setRadius(radius)}
-    //         />
-    //     </View>
-    // );
-    
-};
-
-const styles = StyleSheet.create({
-    titleText: {
-      fontSize: 30,
-      fontWeight: 'bold',
-    },
-    bodyText: {
-        fontSize: 20,
-      },
-  
-  });
-
-export default ConfigScreen;
-*/
