@@ -10,7 +10,7 @@ import { StyleSheet, Text, View, Button, Alert, Image } from 'react-native';
 import { pollTracker } from '../src/device.js';
 // ---
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import MapView, { Marker, Circle } from 'react-native-maps';
 import { FAB, Title } from 'react-native-paper';
 
@@ -37,18 +37,15 @@ import { ReadableStream } from 'web-streams-polyfill/ponyfill';
 import amplifyconfig from '../src/aws-exports.js';
 import Main from '../src/main.js';
 import { userSvc } from '../src/user';
+import { UserConfigContext } from '../src/UserConfigContext'; // Import the context hook
 
 // -------------------------------------------------
 
 // Globals
 let locationClient; // LocationClient
 let updatesEnabled = true; // Enable updates to the aws location tracker
-// let pollTracker = true;    // Poll the aws location tracker for updates
-const trackerName = 'MobileTracker';
 
-// // Step 2: Create an instance of EventEmitter
-// //const emitter = new EventEmitter();
-// const emitter = new NativeEventEmitter();
+const trackerName = 'MobileTracker';
 
 // -------
 Amplify.configure(amplifyconfig);
@@ -222,25 +219,25 @@ async function updateTracker() {
 }
 // -------------------------------------------------
 
-// export const startPolling = () => {
-//   console.log('startPolling() - MARKER VISIBLE');
-//   pollTracker = true;
-// }
 
-// export const stopPolling = () => {
-//   console.log('stopPolling() - MARKER NOT VISIBLE');
-//   pollTracker = false;
-// }
-
-// --- App () ---
-
+// ----------------------------------------------------------------------------- \\
+// --- App () ------------------------------------------------------------------ \\
+// ----------------------------------------------------------------------------- \\
 export default function App() {
   console.log( 'App()');
+  const { userConfig, setUsername, setId, setPostcode, setGeofence } = useContext(UserConfigContext);
 
+  const onPressFabUserOne = async () => {
+      console.log('onPressFabUserOne()');
+      const userDetails = await userSvc.getUserDetailsByName('Fred');
 
-  
-  // --------------------------------------------
+      setUsername(userDetails.username);
+      setPostcode(userDetails.postcode);
+      setGeofence(userDetails.geofence);
 
+  }
+
+  // Handle plus/minus fab button press
   function onPressFab() {
     updatesEnabled = !updatesEnabled;
     console.log( "Updates %s", updatesEnabled ? "enabled" : "disabled" );
@@ -248,12 +245,9 @@ export default function App() {
     updatesEnabled ? setFabIcon( 'minus' ) : setFabIcon( 'plus' );
   }
 
-  async function onPressFabUserOne() {
-    console.log( 'onPressFabUserOne()');
+  
+  // --------------------------------------------
 
-    await userSvc.getUserDetailsByName('Fred');
-
-  }
 
   const [myLocation, setmyLocation] = useState({latitude: 0, longitude: 0});
   const [fabIcon, setFabIcon] = (updatesEnabled ? useState( 'minus' ) : useState( 'plus' ));
@@ -351,61 +345,14 @@ export default function App() {
       await createGeoFence();
      //      await updateTracker(); // not possible from unauth role!
 
-// -------------------------------------------
-/*
-let subscription;
 
-const subscribeToUpdates = async () => {
-  subscription = await appsyncClient
-    .graphql({ query: subscriptions.onPublishMsgFromEb })
-    .subscribe({
-      next: ({ data }) => {
-        console.log("onPublishMsgFromEb (subscription) - msg received***********");
-        console.log(data);
-
-        if (data.onPublishMsgFromEb && data.onPublishMsgFromEb.msg) {
-          const message = data.onPublishMsgFromEb.msg;
-          if (message === "ENTER") {
-            console.log("ENTER received");
-            startPolling();
-          } else if (message === "EXIT") {
-            console.log("EXIT received");
-            stopPolling();
-          } else {
-            console.log("UNKNOWN received");
-          }
-        } else {
-          console.log("Message format unknown or missing 'msg' field");
-        }
-      },
-      error: (error) => {
-        console.error("Subscription error:", error);
-      },
-    });
-};
-
-subscribeToUpdates();
-*/
-
-// -------------------------------------------
-/*     
-      // Event emitter for marker visibility -------
-      const onChangeMarkerVisibility = (visible) => {
-        setIsMarkerVisible(visible);
-      };
-
-      emitter.addListener('changeMarkerVisibility', onChangeMarkerVisibility);
-
-      // Cleanup
-      return () => {
-        emitter.removeListener('changeMarkerVisibility', onChangeMarkerVisibility);
-      };
-      // -------------------------------------------
-*/
       await pollTrackerForUpdates(); // never returns
     })();
   }, []);
     
+
+
+  
   return (
       <View style={styles.container}>
           <Main />
@@ -435,7 +382,6 @@ subscribeToUpdates();
           />
 
       </View>
-
   );
 }
   

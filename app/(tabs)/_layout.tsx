@@ -1,16 +1,19 @@
 import { Tabs } from 'expo-router';
-// import { View, Text } from 'react-native';
+import { UserConfigProvider } from '../src/UserConfigContext';
+
 
 const TabsLayout = () => {
     return (
+        <UserConfigProvider>
         <Tabs>
-            <Tabs.Screen name="userConfigScreen" options={{
+           <Tabs.Screen name="userConfigScreen" options={{
                 headerTitle: "User Config",
             }}/>
             <Tabs.Screen name="App" options={{
                 headerTitle: "Map",
             }}/>
         </Tabs>
+        </UserConfigProvider>
     );
 };
 
