@@ -38,6 +38,7 @@ import amplifyconfig from '../src/aws-exports.js';
 import Main from '../src/main.js';
 import { userSvc } from '../src/user';
 import { UserConfigContext } from '../src/UserConfigContext'; // Import the context hook
+import { AwsLocationClient } from '../src/locationclient';
 
 // -------------------------------------------------
 
@@ -47,12 +48,16 @@ let updatesEnabled = true; // Enable updates to the aws location tracker
 
 const trackerName = 'MobileTracker';
 
+const locationSvc = new AwsLocationClient();
+
+
+
 // -------
 Amplify.configure(amplifyconfig);
 
 globalThis.ReadableStream = ReadableStream;
 
-
+/*
 const createClient = async () => {
     console.log( 'createClient()');
 
@@ -77,7 +82,7 @@ const createClient = async () => {
   console.log( 'createClient() return');  
   return myClient;
 };
-
+*/
 
 // UpdateDevicePosition API
 const updatePosParams = {
@@ -343,7 +348,7 @@ export default function App() {
   useEffect(() => {
     console.log( 'App useEffect()');
     (async () => {
-      locationClient = await createClient();
+      locationClient = await locationSvc.createClient();
       console.log( 'createGeoFence2' );  
       await createGeoFence();
      //      await updateTracker(); // not possible from unauth role!

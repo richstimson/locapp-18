@@ -19,7 +19,7 @@ import { ReadableStream } from 'web-streams-polyfill/ponyfill';
 
 
 // Local imports
-import amplifyconfig from '../src/aws-exports.js';
+import amplifyconfig from '../../src/aws-exports.js';
 import Main from '../src/main.js';
 
 // -------------------------------------------------
@@ -138,7 +138,7 @@ async updatePosition(lat: number, long: number): Promise<void> {
         // console.log('update not sent');
     }
 }
-    async getPosition(): Promise<void> {
+    async getPosition(): Promise<void> { 
         // Implement your logic to get position
         // Send messages to AWS Location client
     }
