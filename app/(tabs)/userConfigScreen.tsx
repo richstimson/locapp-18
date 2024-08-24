@@ -8,17 +8,21 @@ import Device from '../src/device';
 const deviceSvc = new Device();
 
 import { userSvc } from '../src/user';
-import { UserConfigContext, useUserConfig } from '../src/UserConfigContext'; // Import the context hook
-
+import { UserConfigContext } from '../src/UserConfigContext'; // Import the context hook
+import { useUserConfig } from '../src/UserConfigContext'; // Import the context hook
 
 
 // -----------
 
 
 const ConfigScreen = () => {
-    const { userConfig, setUsername, setId, setPostcode, setGeofence } = useContext(UserConfigContext);
+ //   const { userConfig, setUsername, setId, setPostcode, setGeofence } = useContext(UserConfigContext);
+    const { userConfig, setId, setUsername, setPostcode, setGeofence } = useUserConfig();
 
-    
+
+    //const userConfigContext = useContext(UserConfigContext);
+
+
     useEffect(() => {{
             if (userConfig) {
                 console.log('userConfig updated:', userConfig);
@@ -26,16 +30,61 @@ const ConfigScreen = () => {
         }
       }, [userConfig]);
 
+      useEffect(() => {
+        if (userConfig) {
+            console.log('userConfig updated:', userConfig);
+        }
+        else {
+            console.log('userConfig is null');
+        }
+
+        const fetchUserDetails = async () => {
+            console.log('fetchUserDetails');
+            try {
+                const userDetails = await userSvc.getUserDetailsByName('Bob');
+                if (userDetails) {
+                    setId(userDetails.id);
+                    setUsername(userDetails.username);
+                    setPostcode(userDetails.postcode);
+                    setGeofence(userDetails.geofence);
+                } else {
+                    console.error('No user details found');
+                }
+            } catch (error) {
+                console.error('Error fetching user details:', error);
+            }
+        };
+
+        fetchUserDetails();
+    }, []);
+
     useEffect(() => {
+        console.log( "ConfigScreen rendered");
+        console.log( "username: ", userConfig?.username );
+    });
+
+      /*
+      useEffect(() => {
+        if (userConfigContext?.userConfig) {
+            console.log('userConfig updated:', userConfigContext.userConfig);
+        }
+
+        
         // Called on iniiial render to fetch the user details and update the state variables
         const fetchUserDetails = async () => {
             try {
                 const userDetails = await userSvc.getUserDetailsByName('Bob');
-                if (userDetails.username) {
+                if (userDetails) {
+                    userConfigContext?.setId(userDetails.id);
+                    userConfigContext?.setUsername(userDetails.username);
+                    userConfigContext?.setPostcode(userDetails.postcode);
+                    userConfigContext?.setGeofence(userDetails.geofence);
+                    /*
                     setId(userDetails?.id);
                     setUsername(userDetails?.username);
                     setPostcode(userDetails?.postcode);
                     setGeofence(userDetails.geofence);
+                    *
                 } else {
                     console.error('No user details found');
                 }
@@ -44,16 +93,40 @@ const ConfigScreen = () => {
                 console.log(new Error().stack.split(":")[3]); // This will log the stack trace including the line number
             }
         };
-    
         fetchUserDetails();
-    }, []);
-
+    }, [userConfigContext]);
+*/
     /*
     ** handleSubmitUserConfig()
     ** Function to handle the user config submission
     ** This function will call the geocodeAddress function to get the latitude and longitude of the given address
     ** and then create the user with the given details 
     */
+    const handleSubmitUserConfig = async () => {
+        console.log('Submit User Config:', userConfig?.username);
+
+        try {
+            // const results = await Location.geocodeAsync(userConfig?.postcode);
+            const results = await Location.geocodeAsync(userConfig?.postcode ?? '');
+            if (results.length > 0) {
+                console.log('Geocoded Location:', results);
+                const { latitude, longitude } = results[0];
+                if (userConfig) {
+                    userConfig.geofence.lat = latitude;
+                    userConfig.geofence.long = longitude;
+
+                    await userSvc.createUser(userConfig.username, userConfig.postcode, userConfig.geofence);
+                    console.log("User created successfully");
+                }
+            } else {
+                console.error('Geocode not found for the given address.');
+            }
+        } catch (error) {
+            console.error('Error geocoding address:', error);
+        }
+    };
+
+    /*
     const handleSubmitUserConfig = async () => {
         console.log('Submit User Config:', userConfig?.username);
 
@@ -85,6 +158,7 @@ const ConfigScreen = () => {
             console.error('Error geocoding address:', error);
         }
     };
+    */
 
     return (
         <KeyboardAvoidingView

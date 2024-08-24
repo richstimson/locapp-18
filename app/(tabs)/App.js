@@ -34,21 +34,24 @@ import { ReadableStream } from 'web-streams-polyfill/ponyfill';
 
 
 // Local imports
-import amplifyconfig from '../src/aws-exports.js';
-import Main from '../src/main.js';
+import amplifyconfig from '../src/aws-exports';
+//import Main from '../src/main.js';
 import { userSvc } from '../src/user';
 import { UserConfigContext } from '../src/UserConfigContext'; // Import the context hook
-import { AwsLocationClient } from '../src/locationclient';
+import LocationService from '../src/locationClient';
 
 // -------------------------------------------------
 
 // Globals
-let locationClient; // LocationClient
+let locationClient; // LocationClient // multiplr declarations of locationClient <<<<<<<<<<<<<<
 let updatesEnabled = true; // Enable updates to the aws location tracker
 
 const trackerName = 'MobileTracker';
 
-const locationSvc = new AwsLocationClient();
+const locationSvc = new LocationService();
+
+// Create an instance of LocationService and pass the setMyLocation function
+//const locationSvc = new LocationService(setMyLocation);
 
 
 
@@ -83,7 +86,7 @@ const createClient = async () => {
   return myClient;
 };
 */
-
+/*
 // UpdateDevicePosition API
 const updatePosParams = {
     TrackerName: 'MobileTracker',
@@ -100,11 +103,12 @@ const updatePosParams = {
 //        DeviceId: 'edf95663-1824-46ca-b37c-40d6e6ec8853',
   
 const updatePosCommand = new BatchUpdateDevicePositionCommand(updatePosParams);
-
+*/
+/*
 /*
 ** updatePosition(lat, long)
 ** Update the tracker with new co-ordinates (of the mobike device)
-*/
+*
 async function updatePosition(lat, long) {
    console.log( `updatesEnabled: ${updatesEnabled}` );
 
@@ -137,7 +141,9 @@ async function updatePosition(lat, long) {
 }
 
 module.exports.updatePosition = updatePosition;
+*/
 
+/*
 // GetDevicePosition API
 
 const getPosParams = {
@@ -148,7 +154,8 @@ const getPosParams = {
 
 const getPosCommand = new GetDevicePositionCommand(getPosParams);
 // ---
-
+*/
+/*
 // GeoFence API -------------------------------------
 const createGeofenceInput = { // PutGeofenceRequest
   CollectionName: "rs-geofence-collection", // required
@@ -170,7 +177,7 @@ const putGeoFenceCommand = new PutGeofenceCommand(createGeofenceInput);
 /*
 ** createGeoFence()
 ** Create GeoFence using createGeoFenceInput
-*/
+*
 async function createGeoFence() {
   console.log( 'createGeoFence()' );
   console.log( createGeofenceInput );    
@@ -190,11 +197,12 @@ async function createGeoFence() {
     }
   }
   else {
-    console.log('no client ');
+    console.log('ERROR: no client ');
   }
 
 }
-
+*/
+/*
 // Update Tracker API -------------------------------------
 const updateTrackerInput = { 
   TrackerName: 'MobileTracker',
@@ -202,7 +210,7 @@ const updateTrackerInput = {
   Description: 'Bob Tracker',
 };
 
-/** NOTE: This command not be performed by unauth Role! */
+/** NOTE: This command not be performed by unauth Role! *
 const updateTrackerCommand = new UpdateTrackerCommand(updateTrackerInput);
 
 async function updateTracker() {
@@ -219,9 +227,10 @@ async function updateTracker() {
     }
   }
   else {
-    console.log('no client ');
+    console.log('ERROR: no client ');
   }
 }
+*/
 // -------------------------------------------------
 
 
@@ -231,6 +240,10 @@ async function updateTracker() {
 export default function App() {
   console.log( 'App()');
   const { userConfig, setUsername, setId, setPostcode, setGeofence } = useContext(UserConfigContext);
+
+  useEffect(() => {
+    console.log('App component re-rendered');
+  });
 
   const handleFabPress = async (username) => {
     console.log(`handleFabPress(${username})`);
@@ -266,18 +279,20 @@ export default function App() {
     description: "Michele's Ices"
   }
 
+ // const locationClient = new LocationService(setmyLocation); // multiplr declarations of locationClient <<<<<<<<<<<<<<
+
+
   // State to control marker visibility
   const [isMarkerVisible, setIsMarkerVisible] = useState(true);
 
   // Function to toggle marker visibility
   const setMarkerVisibility = ( visible ) => {
     console.log( 'setMarkerVisibility(%s)', visible ? "true" : "false" );
-    setIsMarkerVisible(visible);
+
+//    setIsMarkerVisible(visible);
+    setIsMarkerVisible(true); // Force marker to be visible <<<<<<<<<<
   }
 
-  const toggleMarkerVisibility = () => {
-    setIsMarkerVisible(!isMarkerVisible);
-  };
 
   
   const showMarker = () => {
@@ -302,6 +317,8 @@ export default function App() {
     );
   }
 
+  
+
   /* pollTrackerForUpdates
   ** Poll the aws location tracker for updates - if polling is enabled (when vendor is in my geofence)
   ** Note: RECURSIVE FUNCTION - never returns
@@ -311,7 +328,19 @@ export default function App() {
 
     if( pollTracker ) {
       setMarkerVisibility(true);
-      await getPosition();
+      try {
+        loc = await locationSvc.getPosition();
+        if (loc) {
+          console.log( `Rx Pos: ${loc.longitude},${loc.latitude}`);
+          setmyLocation(loc); // Update the marker position
+        }
+        else {
+          console.log( 'No location data' );
+        } 
+      } catch (error) {
+        console.log( 'pollTrackerForUpdates error' );
+        console.log( error );
+      }
     }
     else {
       setMarkerVisibility(false);
@@ -320,11 +349,11 @@ export default function App() {
     await new Promise(resolve => setTimeout(resolve, 10000));
     await pollTrackerForUpdates();
   }
-    
+ /*   
   /*
   ** async function getPosition() {
   ** Get the current position of the device and update myLocation (used to update the p)
-  */
+  *
   async function getPosition() {
     console.log('getPosition()');
 
@@ -344,26 +373,43 @@ export default function App() {
       });
     }
   }
-
+*/
   useEffect(() => {
-    console.log( 'App useEffect()');
+    // NOTE: This is only called when Map is first rendered
+    
+    console.log( 'App useEffect() **************************************************************' );
     (async () => {
-      locationClient = await locationSvc.createClient();
-      console.log( 'createGeoFence2' );  
-      await createGeoFence();
+/*
+      locationClient = await locationSvc.createClient(); 
+      if (locationClient) {
+        console.log( 'locationClient created' );
+      }
+      else {
+        console.log( 'ERROR: locationClient not created' );
+      }
+
+      
+      console.log( 'createGeoFence2 - move to locationClient *****' ); 
+
+      await locationSvc.createGeoFence();
      //      await updateTracker(); // not possible from unauth role!
 
-
+*/
       await pollTrackerForUpdates(); // never returns
+      
     })();
   }, []);
     
+  /*
+  // Call updateTracker with locationClient
+  useEffect(() => {
+    updateTracker(locationClient);
+  }, [locationClient]);
+*/
+  //           <Main />
 
-
-  
   return (
       <View style={styles.container}>
-          <Main />
           <MapView style={styles.map}>
             {showMarker()}
             <Circle

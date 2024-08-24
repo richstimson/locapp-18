@@ -3,6 +3,7 @@ import { UserConfigProvider } from '../src/UserConfigContext';
 
 
 const TabsLayout = () => {
+    console.log('Rendering TabsLayout'); // Debugging statement
     return (
         <UserConfigProvider>
             <Tabs>

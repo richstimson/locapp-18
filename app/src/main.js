@@ -42,6 +42,7 @@ export default function Main() {
 
           deviceSvc.register('rs-device-01', 'MobileTracker'); 
           
+          /*
           let { status } = await Location.requestForegroundPermissionsAsync();
           if (status !== 'granted') {
             setErrorMsg('Permission to access location was denied');
@@ -74,6 +75,7 @@ export default function Main() {
                   });
             }
           }
+          */
   
         })();
         

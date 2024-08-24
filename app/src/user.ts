@@ -120,7 +120,7 @@ class UserService {
     
         // Set the geofence name based on the user name
         //const geofenceName = name + '-geofence';
-        geofence.name = this.getGeofenceName(username);
+        geofence.name = this.getGeofenceName(username) || ''; // CHECK THIS <<<<<<
 
         console.log(`geofenceName: ${geofence.name}`);
     
@@ -283,10 +283,12 @@ class UserService {
     // getGeofenceNameFromUserId
     // Returns a geofence name based on the user ID
     // e.g. 'user1' -> 'Bob-geofence
-    getGeofenceNameFromUserId(userId: string): string {
+    getGeofenceNameFromUserId(userId: string): string | null {
         console.log(`getGeofenceNameFromUserId ${userId}`);
 
-        const userName = UserService.usernames[userId];
+        let userName: string | null = null;
+
+        userName = UserService.usernames[userId];
         if (userName) {
             console.log(`User ${userId} found: ${userName}`);
             const geofenceName = userName + UserService.geofenceNameSuffix;
@@ -300,7 +302,7 @@ class UserService {
     // getGeofenceName
     // Returns a geofence name based on the user name
     // e.g. 'Bob' -> 'Bob-geofence
-    getGeofenceName(name: string): string {
+    getGeofenceName(name: string): string | null{
         console.log(`getGeofenceName ${name}`);
         if (name) {
             return (name + UserService.geofenceNameSuffix);
