@@ -10,7 +10,8 @@ const deviceSvc = new Device();
 import { userSvc } from '../src/user';
 import { UserConfigContext } from '../src/UserConfigContext'; // Import the context hook
 import { useUserConfig } from '../src/UserConfigContext'; // Import the context hook
-
+import locationSvc from '../src/locationClient';
+import GeofenceContext from '../src/GeofenceContext';
 
 // -----------
 
@@ -18,9 +19,8 @@ import { useUserConfig } from '../src/UserConfigContext'; // Import the context 
 const ConfigScreen = () => {
  //   const { userConfig, setUsername, setId, setPostcode, setGeofence } = useContext(UserConfigContext);
     const { userConfig, setId, setUsername, setPostcode, setGeofence } = useUserConfig();
-
-
-    //const userConfigContext = useContext(UserConfigContext);
+//    const { setGeofence: setGeofenceContext } = useContext(GeofenceContext);
+    const { setGeofenceContext } = useContext(GeofenceContext);
 
 
     useEffect(() => {{
@@ -47,6 +47,17 @@ const ConfigScreen = () => {
                     setUsername(userDetails.username);
                     setPostcode(userDetails.postcode);
                     setGeofence(userDetails.geofence);
+
+                    console.log('>>>>>>>>>>>>>>>>>>>>>> User details.geofence:', userDetails.geofence);
+                    //                   console.log('User details.geofence.geofence:', userDetails.geofence);
+                    
+                    const { geofence } = userDetails; // Destructure the geofence object
+                    createGeofence(geofence);
+
+                    
+
+
+                   //  createGeofence(userDetails.geofence); - this nests a geofence object within a geofence object
                 } else {
                     console.error('No user details found');
                 }
@@ -63,39 +74,8 @@ const ConfigScreen = () => {
         console.log( "username: ", userConfig?.username );
     });
 
-      /*
-      useEffect(() => {
-        if (userConfigContext?.userConfig) {
-            console.log('userConfig updated:', userConfigContext.userConfig);
-        }
 
-        
-        // Called on iniiial render to fetch the user details and update the state variables
-        const fetchUserDetails = async () => {
-            try {
-                const userDetails = await userSvc.getUserDetailsByName('Bob');
-                if (userDetails) {
-                    userConfigContext?.setId(userDetails.id);
-                    userConfigContext?.setUsername(userDetails.username);
-                    userConfigContext?.setPostcode(userDetails.postcode);
-                    userConfigContext?.setGeofence(userDetails.geofence);
-                    /*
-                    setId(userDetails?.id);
-                    setUsername(userDetails?.username);
-                    setPostcode(userDetails?.postcode);
-                    setGeofence(userDetails.geofence);
-                    *
-                } else {
-                    console.error('No user details found');
-                }
-              } catch (error) {
-                console.error('Error fetching user details:', error);
-                console.log(new Error().stack.split(":")[3]); // This will log the stack trace including the line number
-            }
-        };
-        fetchUserDetails();
-    }, [userConfigContext]);
-*/
+
     /*
     ** handleSubmitUserConfig()
     ** Function to handle the user config submission
@@ -126,39 +106,16 @@ const ConfigScreen = () => {
         }
     };
 
-    /*
-    const handleSubmitUserConfig = async () => {
-        console.log('Submit User Config:', userConfig?.username);
+    // Create a geofence on map & in AWS Location Service
+    async function createGeofence( geofence ) {
+        console.log("***************************** createGeofence(): ", geofence);
+//        console.log(geofence);
 
-        // Call the geocodeAddress function
-        try {
-            const results = await Location.geocodeAsync(userConfig?.postcode);
-        
-            if (results.length > 0) {
-                console.log('Geocoded Location:', results);
+        locationSvc.createGeoFence();
+        setGeofenceContext(geofence); // Set the geofence context for the MapScreen
 
-                // Update the context with geocoded location
-                const { latitude, longitude } = results[0];
-                userConfig.geofence.lat = latitude;
-                userConfig.geofence.long = longitude;
-
-                // Create the user
-                userSvc.createUser(userConfig.username, userConfig.postcpde, userConfig.geofence)
-                    .then(() => {
-                        console.log("User created successfully");
-                    })
-                    .catch((error) => {
-                        console.error("Error creating user:", JSON.stringify(error, null, 2));
-                    });
-
-            } else {
-                console.error('Geocode not found for the given address.');
-            }
-        } catch (error) {
-            console.error('Error geocoding address:', error);
-        }
-    };
-    */
+        return;
+    }
 
     return (
         <KeyboardAvoidingView

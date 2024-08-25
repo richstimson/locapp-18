@@ -182,7 +182,7 @@ class LocationService {
                     console.log( 'ERROR: locationClient not created' );
                 }
 
-                console.log( 'createGeoFence2 - move to locationClient *****' ); 
+                console.log( 'createGeoFence2' ); 
 
                 await this.createGeoFence();
                //      await updateTracker(); // not possible from unauth role!
@@ -386,5 +386,7 @@ class LocationService {
   }
 }
 
+const locationSvc = new LocationService();
 
-export default LocationService;
+export default locationSvc;
+//export default LocationService;
