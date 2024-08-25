@@ -26,7 +26,8 @@ async function startPolling() {
 }
 
 async function stopPolling() {
-    pollTracker = false;
+    // >>>>>>>>>>>>>>>>>>>>>>>>>>>> pollTracker = false; <<<<<<<<<<<<<<<<<<<<<<<
+    console.log('stopPolling() DISABLED - TEMP');
     // Logic to stop polling
 }
 

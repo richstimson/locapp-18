@@ -151,6 +151,16 @@ export default function App() {
       setMarkerVisibility(false);
     }
 
+    // Set an interval to call pollTrackerForUpdates every 10 seconds  
+    // NOTE: A better way to do this would be to clear the interval when pollTracker is false, 
+    // and then restart the interval when pollTracker is true
+    // // NOTE: This seems to cause excisve callback - so I've commented it out for no
+    // const intervalId = setInterval(pollTrackerForUpdates, 10000);
+    // console.log( '************** New timer running - intervalId: ', intervalId );
+  // Optionally, you can clear the interval when you no longer need to poll
+  // clearInterval(intervalId);
+
+    // Recursive call to pollTrackerForUpdates
     await new Promise(resolve => setTimeout(resolve, 10000));
     await pollTrackerForUpdates();
   }

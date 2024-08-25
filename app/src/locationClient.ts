@@ -184,15 +184,24 @@ class LocationService {
 
                 console.log( 'createGeoFence2' ); 
 
+                // Create GeoFence
                 await this.createGeoFence();
                //      await updateTracker(); // not possible from unauth role!
                           
                 // Phone/Device location services
-                let { status } = await Location.requestForegroundPermissionsAsync();
-                if (status !== 'granted') {
-                    console.log('Permission to access location was denied');
-                    return;
-                } else {
+                try {
+                    let { status } = await Location.requestForegroundPermissionsAsync();
+                    if (status !== 'granted') {
+                        console.log('Permission to access location was denied');
+                        return;
+                    }
+                } catch (error) {
+                    console.log('Error getting location permissions:', error);
+                }
+                
+
+//                } else {
+                    try {
 
                     let isLocationServicesEnabled = await Location.hasServicesEnabledAsync();
                     let locationProviderStatus = await Location.getProviderStatusAsync();
@@ -214,12 +223,22 @@ class LocationService {
             //                  enableHighAccuracy: true,
                             distanceInterval: 1,
                             timeInterval: 30000}, newLoc => {
-            //                    console.log(`NEW location: ${newLoc.coords.longitude}, ${newLoc.coords.latitude}`);
-            //                  setLocation(newLoc);
-            //                    deviceSvc.setLocation(newLoc.coords.latitude, newLoc.coords.longitude);
-                            this.updatePosition(newLoc.coords.latitude, newLoc.coords.longitude);
+                                try {
+                                    console.log(`NEW location: ${newLoc.coords.longitude}, ${newLoc.coords.latitude}`);
+                                    // setLocation(newLoc);
+                                    // deviceSvc.setLocation(newLoc.coords.latitude, newLoc.coords.longitude);
+                                    this.updatePosition(newLoc.coords.latitude, newLoc.coords.longitude);
+                                } catch (error) {
+                                    console.error('Error updating position:', error);
+                                }
                         });
                     }
+                    else {
+                        console.log('Location services are not enabled');
+                    }
+                }
+                catch (error) {
+                    console.log('Error getting location:', error);
                 }
 
         })();
